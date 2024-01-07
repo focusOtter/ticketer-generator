@@ -14,7 +14,7 @@ async function generateBarcode(text) {
 		bcid: 'code128', // Barcode type
 		text, // Text to encode
 		width: 80,
-		includetext: true, // Show human-readable text
+		// includetext: true, // Show human-readable text
 		textxalign: 'center', // Always good to set this
 		textcolor: 'ff0000', // Red text
 		rotate: 'L',
@@ -26,7 +26,7 @@ async function generateBarcode(text) {
 async function generateSVG(text) {
 	try {
 		const svg = textToSVG.getSVG(text, {
-			fontSize: 72,
+			fontSize: 110,
 			anchor: 'top',
 			attributes: { fill: 'black' },
 		})
@@ -77,10 +77,10 @@ async function createTicket(customerName, ticketId, outputPath) {
 }
 
 // Example usage
-const customerName = 'Michael Liendo'
+const customerName = 'Focus Otter'
 const hyphenatedCustomerName = customerName.toLowerCase().replace(' ', '-')
 createTicket(
 	customerName,
-	'abc123-987',
+	'some-random-id',
 	`output/event/holiday-walkthrough/${hyphenatedCustomerName}-ticket.png`
 )
