@@ -4,26 +4,12 @@ import bwipjs from 'bwip-js'
 import { fileURLToPath } from 'url'
 import TextToSVG from 'text-to-svg'
 
-const textToSVG = TextToSVG.loadSync()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// Create a QR Code
-async function generateBarcode(text) {
-	let svg = bwipjs.toSVG({
-		bcid: 'code128', // Barcode type
-		text, // Text to encode
-		width: 80,
-		// includetext: true, // Show human-readable text
-		textxalign: 'center', // Always good to set this
-		textcolor: 'ff0000', // Red text
-		rotate: 'L',
-	})
-	return Buffer.from(svg)
-}
-
 // Create an SVG from text
 async function generateSVG(text) {
+	const textToSVG = TextToSVG.loadSync()
 	try {
 		const svg = textToSVG.getSVG(text, {
 			fontSize: 110,
@@ -37,13 +23,37 @@ async function generateSVG(text) {
 	}
 }
 
-// Create the ticket
+// Create a QRCode
+async function generateQRCode(text) {
+	let qrcodeBuffer = await bwipjs.toBuffer({
+		bcid: 'qrcode',
+		text,
+		scale: 5,
+	})
+
+	return qrcodeBuffer
+}
+
+// Create a Barcode
+async function generateBarcode(text) {
+	let svg = bwipjs.toSVG({
+		bcid: 'code128', // Barcode type
+		text, // Text to encode
+		width: 80,
+		// includetext: true, // Show human-readable text
+		textxalign: 'center', // Always good to set this
+		textcolor: 'ff0000', // Red text
+		rotate: 'L',
+	})
+	return Buffer.from(svg)
+}
+
 async function createTicket(customerName, ticketId, outputPath) {
-	// load the ticket template
 	const ticketTemplatePath = path.join(
 		__dirname,
 		'./xmas-sample-ticket-hi-res.png'
 	)
+
 	const ticket = sharp(ticketTemplatePath)
 
 	try {
@@ -53,21 +63,35 @@ async function createTicket(customerName, ticketId, outputPath) {
 		// Generate customer name for ticket as buffer
 		const customerNameImageBuffer = await generateSVG(customerName)
 
+		const qrcodeImageBuffer = await generateQRCode(ticketId)
+
+		const qrCodeOverlay = {
+			input: qrcodeImageBuffer,
+			top: 494,
+			left: 3308,
+		}
+
 		// Params to overlay QR code onto the template
 		const barcodeOverlay = {
 			input: barcodeImageBuffer,
-			left: 3400, // X position for QR code
-			top: 400, // Y position for QR code
+			left: 3393, // X position for QR code
+			top: 351, // Y position for QR code
 		}
 		// Params to overlay SVG onto the template
 		const svgOverlay = {
 			input: customerNameImageBuffer,
-			top: 700,
-			left: 600,
+			top: 791,
+			left: 508,
 		}
 
 		// Overlay the QR Code and SVG
-		await ticket.composite([barcodeOverlay, svgOverlay]).toFile(outputPath)
+		await ticket
+			.composite([
+				// barcodeOverlay,
+				qrCodeOverlay,
+				svgOverlay,
+			])
+			.toFile(outputPath)
 
 		console.log('Ticket created!')
 	} catch (err) {
@@ -81,6 +105,6 @@ const customerName = 'Focus Otter'
 const hyphenatedCustomerName = customerName.toLowerCase().replace(' ', '-')
 createTicket(
 	customerName,
-	'some-random-id',
+	'some-random-ticket-id',
 	`output/event/holiday-walkthrough/${hyphenatedCustomerName}-ticket.png`
 )
