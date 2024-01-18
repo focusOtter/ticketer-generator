@@ -24,7 +24,7 @@ For a detailed overview and use-case scenario of this project, you can watch our
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/TicketGenerator.git
+   git clone https://github.com/focusOtter/ticketer-generator.git
    cd TicketGenerator
    ```
 
@@ -57,8 +57,8 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [@YourTwitter](https://twitter.com/yourusername)
-Project Link: [https://github.com/yourusername/TicketGenerator](https://github.com/yourusername/TicketGenerator)
+Your Name - [@focusotter](https://twitter.com/focusotter)
+Project Link: [https://github.com/focusOtter/ticketer-generator](https://github.com/focusOtter/ticketer-generator)
 
 ---
 
