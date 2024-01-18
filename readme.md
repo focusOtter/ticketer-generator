@@ -1,4 +1,5 @@
 # Ticket Generator
+![yt-thumbnail](https://github.com/focusOtter/ticketer-generator/assets/5106417/8dc4b308-a551-4879-9f28-b08b94bf517f)
 
 ## Introduction
 
